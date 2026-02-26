@@ -39,7 +39,7 @@ class DTPipeline(ABC):
         # Select categorical columns
         self.categorical_cols = [cname for cname in X.columns if X[cname].dtype == "object"]
         # Select numerical columns
-        self.numerical_cols = [cname for cname in X.columns if X[cname].dtype in ['int64', 'float64']]
+        self.numerical_cols = [cname for cname in X.columns if pd.api.types.is_numeric_dtype(X[cname])]
 
         self.pipeline = self.build_pipeline()
 
