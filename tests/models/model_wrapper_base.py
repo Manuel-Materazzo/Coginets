@@ -39,8 +39,10 @@ class ModelWrapperBase(unittest.TestCase):
         if self.model is not None:
             self.model.model = None
             self.model.importances = None
-            self.assertFalse(self.model.get_loss())
-            self.assertTrue(self.model.get_feature_importance(self.X).empty)
+            with self.assertRaises((ValueError, RuntimeError)):
+                self.model.get_loss()
+            with self.assertRaises((ValueError, RuntimeError)):
+                self.model.get_feature_importance(self.X)
 
     def test_optimal_fit_and_statistical_methods(self):
         if self.model is not None:
