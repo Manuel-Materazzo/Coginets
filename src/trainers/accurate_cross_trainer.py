@@ -1,7 +1,5 @@
-import numpy as np
 import pandas as pd
 from pandas import DataFrame, Series
-from scipy.stats import trim_mean
 
 from src.enums.accuracy_metric import AccuracyMetric
 from src.models.model_wrapper import ModelWrapper
@@ -108,30 +106,5 @@ class AccurateCrossTrainer(Trainer):
             best_rounds.append(best_iteration or 0)
             cv_scores.append(accuracy)
 
-        # compute comparisons across all folds
-        if len(oof_comparisons_dataframes) > 0:
-            oof_prediction_comparisons = pd.concat(oof_comparisons_dataframes)
-        else:
-            oof_prediction_comparisons = None
-
-        # Calculate the mean accuracy from cross-validation
-        mean_accuracy = np.mean(cv_scores)
-        # Calculate optimal boosting rounds
-        optimal_boost_rounds = int(np.mean(best_rounds))
-        pruned_optimal_boost_rounds = int(trim_mean(best_rounds, proportiontocut=0.1))  # trim extreme values
-
-        if log_level > 0:
-            print("Cross-Validation {}: {}".format(self.metric.value, mean_accuracy))
-            if log_level > 1:
-                print(cv_scores)
-            print("Optimal iterations: ", optimal_boost_rounds)
-            if log_level > 1:
-                print("Pruned optimal iterations: ", pruned_optimal_boost_rounds)
-                print(best_rounds)
-
-        # Cross validate model with the optimal boosting round, to check on MAE discrepancies
-        if iterations is None and log_level > 0:
-            print("Generating {} with optimal iterations".format(self.metric.value))
-            self.validate_model(X, y, optimal_boost_rounds, params=params)
-
-        return mean_accuracy, optimal_boost_rounds, oof_prediction_comparisons
+        return self._aggregate_cv_results(cv_scores, best_rounds, oof_comparisons_dataframes,
+                                             log_level, iterations, params, X, y)

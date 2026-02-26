@@ -3,6 +3,8 @@ import os
 import pickle
 from pathlib import Path
 
+import numpy as np
+import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from pandas import DataFrame, Series
@@ -16,6 +18,7 @@ from src.models.model_inference_wrapper import ModelInferenceWrapper
 from src.models.model_wrapper import ModelWrapper
 from src.pipelines.dt_pipeline import DTPipeline
 from abc import ABC, abstractmethod
+from scipy.stats import trim_mean
 
 
 def show_confusion_matrix(real_values: Series, predictions):
@@ -160,6 +163,50 @@ class Trainer(ABC):
         :param output_prediction_comparison:
         :return:
         """
+
+    def _aggregate_cv_results(self, cv_scores: list, best_rounds: list, oof_comparisons_dataframes: list,
+                              log_level: int, iterations, params,
+                              X: DataFrame = None, y: Series = None) -> tuple:
+        """
+        Aggregates cross-validation results: computes mean accuracy, optimal boosting rounds,
+        logs results, and optionally re-validates with optimal iterations.
+        :param cv_scores: list of accuracy scores from each fold.
+        :param best_rounds: list of best iteration counts from each fold.
+        :param oof_comparisons_dataframes: list of DataFrames with prediction comparisons per fold.
+        :param log_level: verbosity level (0=silent, 1=summary, 2=detailed).
+        :param iterations: original iterations parameter (None means early stopping was used).
+        :param params: model parameters.
+        :param X: features DataFrame for re-validation.
+        :param y: target Series for re-validation.
+        :return: Tuple of (mean_accuracy, optimal_boost_rounds, oof_prediction_comparisons).
+        """
+        # compute comparisons across all folds
+        if len(oof_comparisons_dataframes) > 0:
+            oof_prediction_comparisons = pd.concat(oof_comparisons_dataframes)
+        else:
+            oof_prediction_comparisons = None
+
+        # Calculate the mean accuracy from cross-validation
+        mean_accuracy = np.mean(cv_scores)
+        # Calculate optimal boosting rounds
+        optimal_boost_rounds = int(np.mean(best_rounds))
+        pruned_optimal_boost_rounds = int(trim_mean(best_rounds, proportiontocut=0.1))
+
+        if log_level > 0:
+            print("Cross-Validation {}: {}".format(self.metric.value, mean_accuracy))
+            if log_level > 1:
+                print(cv_scores)
+            print("Optimal iterations: ", optimal_boost_rounds)
+            if log_level > 1:
+                print("Pruned optimal iterations: ", pruned_optimal_boost_rounds)
+                print(best_rounds)
+
+        # Cross validate model with the optimal boosting round, to check on accuracy discrepancies
+        if iterations is None and log_level > 0:
+            print("Generating {} with optimal iterations".format(self.metric.value))
+            self.validate_model(X, y, iterations=optimal_boost_rounds, log_level=1, params=params)
+
+        return mean_accuracy, optimal_boost_rounds, oof_prediction_comparisons
 
     def get_predictions(self, X: DataFrame) -> Series:
         if self.metric == AccuracyMetric.AUC:
