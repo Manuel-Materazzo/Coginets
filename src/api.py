@@ -37,9 +37,14 @@ InputData = create_pydantic_data_model(config)
 app = FastAPI()
 
 
-@app.post("/predict", response_model=List[float])
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
+
+@app.post("/predict", response_model=List[int])
 async def predict_post(datas: List[InputData]):
-    dataframe = pd.DataFrame([data.dict() for data in datas])
+    dataframe = pd.DataFrame([data.model_dump() for data in datas])
     preprocessor.preprocess_data(dataframe)
     processed_data = pipeline.transform(dataframe)
     return model.predict(processed_data).tolist()
