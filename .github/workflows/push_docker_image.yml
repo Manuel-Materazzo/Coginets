@@ -22,5 +22,5 @@ jobs:
 
       - name: 'Build Image'
         run: |
-          docker build . --tag ghcr.io/manuel-materazzo/boost-utils-example:latest
-          docker push ghcr.io/manuel-materazzo/boost-utils-example:latest
+          docker build . --tag ghcr.io/manuel-materazzo/coginets-example:latest
+          docker push ghcr.io/manuel-materazzo/coginets-example:latest

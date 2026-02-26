@@ -1,4 +1,4 @@
-name: Pull and Merge from BoostUtils
+name: Pull and Merge from Coginets
 
 on:
 #  push:
@@ -27,13 +27,13 @@ jobs:
         run: |
           git remote set-url origin https://${{ secrets.ACTIONS_PAT }}@github.com/[REPO URL].git
 
-      - name: Pull changes from BoostUtils
+      - name: Pull changes from Coginets
         continue-on-error: true
         run: |
-          git remote add boost-utils https://github.com/Manuel-Materazzo/BoostUtils.git
-          git fetch boost-utils
+          git remote add coginets https://github.com/Manuel-Materazzo/Coginets.git
+          git fetch coginets
           git config pull.rebase false
-          git pull boost-utils master --allow-unrelated-histories
+          git pull coginets master --allow-unrelated-histories
 
       - name: Resolve conflicts automatically
         run: |
@@ -55,7 +55,7 @@ jobs:
           git checkout -b conflict-resolution
           git add .
           git reset src/pipelines/housing_prices_competition_dt_pipeline.py resources/ .github/ README.md src/main_ensemble.py
-          git commit -m "Pull changes from BoostUtils"
+          git commit -m "Pull changes from Coginets"
           git push -u origin conflict-resolution --force
           gh auth login --with-token <<<"${{ secrets.ACTIONS_PAT }}"
           gh pr create --title "Resolve merge conflicts or updates" --body "This PR resolves merge conflicts or includes updates that occurred during the sync." --head conflict-resolution --base master
