@@ -1,6 +1,7 @@
 import math
 import os
 import pickle
+from pathlib import Path
 
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -26,15 +27,18 @@ def show_confusion_matrix(real_values: Series, predictions):
     plt.show()
 
 
-def save_model(model: ModelInferenceWrapper):
-    os.makedirs('../target', exist_ok=True)
+_TARGET_DIR = Path(__file__).resolve().parent.parent.parent / 'target'
 
-    with open('../target/model.pkl', 'wb') as file:
+
+def save_model(model: ModelInferenceWrapper):
+    _TARGET_DIR.mkdir(parents=True, exist_ok=True)
+
+    with open(_TARGET_DIR / 'model.pkl', 'wb') as file:
         pickle.dump(model, file)
 
 
 def load_model() -> ModelInferenceWrapper:
-    with open('../target/model.pkl', 'rb') as file:
+    with open(_TARGET_DIR / 'model.pkl', 'rb') as file:
         return pickle.load(file)
 
 

@@ -1,13 +1,14 @@
-import os
 import pickle
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 from pandas import DataFrame
 
+_TARGET_DIR = Path(__file__).resolve().parent.parent.parent / 'target'
+
 
 def load_preprocessor() -> any:
-    path = os.path.dirname(os.path.realpath(__file__)) + '/../../target/preprocessor.pkl'
-    with open(path, 'rb') as file:
+    with open(_TARGET_DIR / 'preprocessor.pkl', 'rb') as file:
         return pickle.load(file)
 
 
@@ -21,7 +22,7 @@ class DataPreprocessor(ABC):
         """
 
     def save_preprocessor(self):
-        os.makedirs('../target', exist_ok=True)
+        _TARGET_DIR.mkdir(parents=True, exist_ok=True)
 
-        with open('../target/preprocessor.pkl', 'wb') as file:
+        with open(_TARGET_DIR / 'preprocessor.pkl', 'wb') as file:
             pickle.dump(self, file)

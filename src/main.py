@@ -1,6 +1,4 @@
-import pandas as pd
 import time
-import re
 
 from src.enums.accuracy_metric import AccuracyMetric
 from src.enums.optimization_direction import OptimizationDirection
@@ -16,24 +14,11 @@ from src.hyperparameter_optimizers.default_grid_optimizer import DefaultGridOpti
 from src.hyperparameter_optimizers.hyperopt_bayesian_optimizer import HyperoptBayesianOptimizer
 from src.hyperparameter_optimizers.optuna_optimizer import OptunaOptimizer
 from src.trainers.trainer import save_model
-
-
-def load_data():
-    # Load the data
-    file_path = '../resources/train.csv'
-    data = pd.read_csv(file_path)
-    # standardize column names
-    data = data.rename(columns=lambda x: re.sub('[^A-Za-z0-9_]+', '_', x))
-
-    # Remove rows with missing target, separate target from predictors
-    pruned_data = data.dropna(axis=0, subset=['SalePrice'])
-    y = pruned_data['SalePrice']
-    X = pruned_data.drop(['SalePrice'], axis=1)
-    return X, y
+from src.utils.data_utils import load_data
 
 
 print("Loading data...")
-X, y = load_data()
+X, y = load_data('train.csv', 'SalePrice')
 
 # save model file for current dataset on target directory
 print("Saving data model...")

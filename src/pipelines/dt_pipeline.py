@@ -3,6 +3,7 @@ import pickle
 import pandas as pd
 import json
 from abc import ABC, abstractmethod
+from pathlib import Path
 from pandas import DataFrame
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
@@ -11,10 +12,11 @@ from sklearn import set_config
 
 from src.utils.json_utils import map_dtype
 
+_TARGET_DIR = Path(__file__).resolve().parent.parent.parent / 'target'
+
 
 def load_pipeline() -> any:
-    path = os.path.dirname(os.path.realpath(__file__)) + '/../../target/pipeline.pkl'
-    with open(path, 'rb') as file:
+    with open(_TARGET_DIR / 'pipeline.pkl', 'rb') as file:
         return pickle.load(file)
 
 
@@ -23,10 +25,10 @@ def save_data_model(X: DataFrame):
         "fields": {col: map_dtype(dtype) for col, dtype in X.dtypes.items()}
     }
 
-    os.makedirs('../target', exist_ok=True)
+    _TARGET_DIR.mkdir(parents=True, exist_ok=True)
 
     # Save config dictionary as JSON file
-    with open('../target/data-model.json', 'w+') as f:
+    with open(_TARGET_DIR / 'data-model.json', 'w+') as f:
         json.dump(config, f, indent=4)
 
 
@@ -100,7 +102,7 @@ class DTPipeline(ABC):
         return None
 
     def save_pipeline(self):
-        os.makedirs('../target', exist_ok=True)
+        _TARGET_DIR.mkdir(parents=True, exist_ok=True)
 
-        with open('../target/pipeline.pkl', 'wb') as file:
+        with open(_TARGET_DIR / 'pipeline.pkl', 'wb') as file:
             pickle.dump(self, file)
