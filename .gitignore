@@ -1,12 +1,11 @@
 /resources/brist1d/
 /target/
-/src/catboost_info/
 /src/submission.csv
-/catboost_info/
 /.venv/
 .idea
 __pycache__
 /tests/trainers/catboost_info/
 /tests/hyperparameter_optimizers/catboost_info/
-/.coverage
 /coverage.xml
+.coverage
+catboost_info
