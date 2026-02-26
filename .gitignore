@@ -4,6 +4,8 @@
 /src/submission.csv
 /catboost_info/
 /.venv/
+.idea
+__pycache__
 /tests/trainers/catboost_info/
 /tests/hyperparameter_optimizers/catboost_info/
 /.coverage
