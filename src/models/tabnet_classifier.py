@@ -6,7 +6,7 @@ from hyperopt import hp
 from pytorch_tabnet.tab_model import TabNetClassifier
 from src.enums.objective import Objective
 from src.models.model_wrapper import ModelWrapper
-from src.models.overrides.TabnetClassifierOverride import TabNetClassifierOverride
+from src.models.overrides.tabnet_classifier_override import TabNetClassifierOverride
 
 
 class TabNetClassifierWrapper(ModelWrapper):

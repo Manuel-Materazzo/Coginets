@@ -6,7 +6,7 @@ from hyperopt import hp
 from pytorch_tabnet.tab_model import TabNetRegressor
 from src.enums.objective import Objective
 from src.models.model_wrapper import ModelWrapper
-from src.models.overrides.TabnetRegressorOverride import TabNetRegressorOverride
+from src.models.overrides.tabnet_regressor_override import TabNetRegressorOverride
 
 
 class TabNetRegressorWrapper(ModelWrapper):
