@@ -8,7 +8,6 @@ from src.pipelines.dt_pipeline import DTPipeline
 
 class Transform(TransformerMixin):
     def __init__(self, **kwargs):
-        print(kwargs)
         self.hyperparam = kwargs
 
     def fit(self, X, y=None):

@@ -16,6 +16,7 @@ class XGBRegressorWrapper(ModelWrapper):
         return Objective.REGRESSION
 
     def get_base_model(self, iterations, params):
+        params = params.copy()
         params.update({
             'random_state': 0,
             'n_estimators': iterations,
@@ -100,22 +101,20 @@ class XGBRegressorWrapper(ModelWrapper):
         return self.model.predict(X)
 
     def predict_proba(self, X):
-        print("ERROR: predict_proba called on a regression model")
+        raise NotImplementedError("predict_proba is not supported on regression models")
 
     def get_best_iteration(self) -> int:
         return self.model.best_iteration
 
     def get_loss(self) -> dict[str, dict[str, list[float]]]:
         if self.model is None:
-            print("ERROR: No model has been fitted")
-            return {}
+            raise ValueError("No model has been fitted")
 
         return self.model.evals_result()
 
     def get_feature_importance(self, features) -> DataFrame:
         if self.model is None:
-            print("ERROR: No model has been fitted")
-            return pd.DataFrame()
+            raise ValueError("No model has been fitted")
 
         importances = self.model.feature_importances_
 

@@ -95,8 +95,7 @@ class Trainer(ABC):
 
     def show_loss(self):
         if len(self.evals) == 0:
-            print("ERROR: No model has been fitted with an evaluation set")
-            return
+            raise ValueError("No model has been fitted with an evaluation set")
 
         plt.figure(figsize=(12, 6))
         plt.xlabel('Iterations')
@@ -184,3 +183,5 @@ class Trainer(ABC):
                 return accuracy_score(real_values, predictions)
             case AccuracyMetric.QWK:
                 return cohen_kappa_score(real_values, predictions, weights='quadratic')
+            case _:
+                raise ValueError(f"Unknown accuracy metric: {self.metric}")

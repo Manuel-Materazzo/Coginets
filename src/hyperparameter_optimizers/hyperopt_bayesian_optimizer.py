@@ -1,5 +1,5 @@
 from pandas import DataFrame, Series
-from hyperopt import STATUS_OK, Trials, fmin, STATUS_FAIL, tpe
+from hyperopt import STATUS_OK, Trials, fmin, tpe
 
 from src.enums.optimization_direction import OptimizationDirection
 from src.hyperparameter_optimizers.hp_optimizer import HyperparameterOptimizer
@@ -14,7 +14,6 @@ class HyperoptBayesianOptimizer(HyperparameterOptimizer):
         self.y = None
         self.X = None
         self.trials = 100
-        self.direction = OptimizationDirection.MINIMIZE
         self.domain_space = model_wrapper.get_bayesian_space()
         self.model_wrapper = model_wrapper
 
@@ -58,8 +57,7 @@ class HyperoptBayesianOptimizer(HyperparameterOptimizer):
         elif self.direction == OptimizationDirection.MINIMIZE:
             multiplier = 1
         else:
-            print("Optimization direction unknown, can't optimize")
-            return {'status': STATUS_FAIL}
+            raise ValueError("Optimization direction unknown, can't optimize")
 
         params = self.space_to_params(space)
         accuracy, _, _ = self.trainer.validate_model(self.X, self.y, log_level=0, params=params)

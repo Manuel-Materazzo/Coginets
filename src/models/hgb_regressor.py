@@ -26,8 +26,8 @@ class HGBRegressorWrapper(ModelWrapper):
 
     def get_base_model(self, iterations, params):
         if disabled:
-            print(version_mismatch)
-            return None
+            raise RuntimeError(version_mismatch)
+        params = params.copy()
         params.update({
             'random_state': 0,
         })
@@ -77,16 +77,14 @@ class HGBRegressorWrapper(ModelWrapper):
 
     def fit(self, X, y, iterations, params=None):
         if disabled:
-            print(version_mismatch)
-            return None
+            raise RuntimeError(version_mismatch)
 
         self.train_until_optimal(X, None, y, None, params=params)
 
     def train_until_optimal(self, train_X, validation_X, train_y, validation_y, params=None):
 
         if disabled:
-            print(version_mismatch)
-            return
+            raise RuntimeError(version_mismatch)
 
         params = params or {}
         params = params.copy()
@@ -108,25 +106,22 @@ class HGBRegressorWrapper(ModelWrapper):
 
     def predict(self, X) -> any:
         if disabled:
-            print(version_mismatch)
-            return None
+            raise RuntimeError(version_mismatch)
 
         return self.model.predict(X)
 
     def predict_proba(self, X):
-        print("ERROR: predict_proba called on a regression model")
+        raise NotImplementedError("predict_proba is not supported on regression models")
 
     def get_best_iteration(self) -> int:
         if disabled:
-            print(version_mismatch)
-            return 0
+            raise RuntimeError(version_mismatch)
 
         return self.model.n_iter_
 
     def get_loss(self) -> dict[str, dict[str, list[float]]]:
         if self.model is None:
-            print("ERROR: No model has been fitted")
-            return {}
+            raise ValueError("No model has been fitted")
 
         return {
             'validation_0': {
@@ -136,8 +131,7 @@ class HGBRegressorWrapper(ModelWrapper):
 
     def get_feature_importance(self, features) -> DataFrame:
         if self.importances is None:
-            print("ERROR: No model has been fitted")
-            return pd.DataFrame()
+            raise ValueError("No model has been fitted")
 
         # sort and merge importances and column names into a dataframe
         feature_importances = sorted(zip(self.importances.importances_mean, features), reverse=True)

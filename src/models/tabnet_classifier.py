@@ -140,8 +140,7 @@ class TabNetClassifierWrapper(ModelWrapper):
 
     def get_loss(self) -> dict[str, dict[str, list[float]]]:
         if self.model is None:
-            print("ERROR: No model has been fitted")
-            return {}
+            raise ValueError("No model has been fitted")
 
         history = self.model.history.history
         losses = [value for key, value in history.items() if 'valid_' in key]
@@ -150,8 +149,7 @@ class TabNetClassifierWrapper(ModelWrapper):
 
     def get_feature_importance(self, features) -> DataFrame:
         if self.model is None:
-            print("ERROR: No model has been fitted")
-            return pd.DataFrame()
+            raise ValueError("No model has been fitted")
 
         importances = self.model.feature_importances_
 
