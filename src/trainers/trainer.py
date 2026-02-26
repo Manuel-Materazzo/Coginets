@@ -74,7 +74,7 @@ class Trainer(ABC):
                 return StratifiedKFold(n_splits=5, random_state=0, shuffle=True)
 
     def show_feature_importance(self, X: DataFrame):
-        # Apply the same trasformations as the training process
+        # Apply the same transformations as the training process
         processed_X = self.pipeline.transform(X)
 
         # Get columns and importance list

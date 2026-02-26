@@ -102,13 +102,13 @@ def add_regression_tests(model_name, model):
         training_test_name,
         TrainerBase._train,
         model_type=model(),
-        metric=AccuracyMetric.AUC,
+        metric=AccuracyMetric.RMSE,
         X=regression_X,
         y=regression_y
     )
 
 
-# Discover modules dinamically
+# Discover modules dynamically
 for loader, module_name, is_pkg in pkgutil.iter_modules(models.__path__):
     # import model module
     module = importlib.import_module(f'src.models.{module_name}')

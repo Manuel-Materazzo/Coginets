@@ -5,7 +5,7 @@ from tests.data_load import load_classification_data, load_regression_data
 from tests.trainers.trainer_base import TrainerBase
 
 
-class TestAccurateCrossTrainer(TrainerBase):
+class TestCachedAccurateCrossTrainer(TrainerBase):
 
     @classmethod
     def setUpClass(cls):

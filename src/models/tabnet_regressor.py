@@ -56,7 +56,7 @@ class TabNetRegressorWrapper(ModelWrapper):
             },
             {
                 'recalibrate_iterations': True,
-                'mask_type': ["entmax", "sparsemaxor"],
+                'mask_type': ["entmax", "sparsemax"],
                 'lambda_sparse': np.logspace(-3, -1, num=5)
             }
         ]
