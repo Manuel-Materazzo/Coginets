@@ -39,7 +39,7 @@ A Docker configuration for easy deployment
 
 ### 🌐 Live Preview
 
-Check out the live preview on [Render](https://boost-utils-example.onrender.com/docs) and try out inference.\
+Check out the live preview on [Render](https://coginets-example.onrender.com/docs) and try out inference.\
 Note: The live preview will cold-start as you enter the link, it could take up to 1min to fully load.
 
 ## 🚀 Getting Started
