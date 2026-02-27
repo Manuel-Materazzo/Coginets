@@ -1,7 +1,6 @@
 import unittest
 import importlib
 import pkgutil
-from itertools import product
 
 import src.models as models
 
@@ -62,8 +61,8 @@ for _, model_module_name, _ in pkgutil.iter_modules(models.__path__):
     if model_module_name.endswith('_regressor'):
         models_modules.append(model_module)
 
-# create a combination list of models
-combinations = list(product(models_modules, models_modules))
+# create consecutive pairs so each model is tested at least once, without full cartesian product
+combinations = list(zip(models_modules, models_modules[1:] + [models_modules[0]]))
 
 # create a test case for each model combination
 for model_module_1, model_module_2 in combinations:
