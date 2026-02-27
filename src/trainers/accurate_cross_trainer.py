@@ -10,8 +10,8 @@ from src.trainers.trainer import Trainer
 class AccurateCrossTrainer(Trainer):
 
     def __init__(self, pipeline: DTPipeline, model_wrapper: ModelWrapper, metric: AccuracyMetric = AccuracyMetric.MAE,
-                 grouping_columns: list[str] = None):
-        super().__init__(pipeline, model_wrapper, metric=metric, grouping_columns=grouping_columns)
+                 grouping_columns: list[str] = None, n_splits: int = 5):
+        super().__init__(pipeline, model_wrapper, metric=metric, grouping_columns=grouping_columns, n_splits=n_splits)
 
     def __cross_train(self, X: DataFrame, y: Series, train_index: int, val_index: int, iterations=None,
                       params=None, output_prediction_comparison=False) -> (int, int):

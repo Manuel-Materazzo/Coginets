@@ -15,8 +15,9 @@ class CachedAccurateCrossTrainer(Trainer):
     """
 
     def __init__(self, pipeline: DTPipeline, model_wrapper: ModelWrapper, X: DataFrame, y: Series,
-                 metric: AccuracyMetric = AccuracyMetric.MAE, grouping_columns: list[str] = None):
-        super().__init__(pipeline, model_wrapper, metric=metric, grouping_columns=grouping_columns)
+                 metric: AccuracyMetric = AccuracyMetric.MAE, grouping_columns: list[str] = None,
+                 n_splits: int = 5):
+        super().__init__(pipeline, model_wrapper, metric=metric, grouping_columns=grouping_columns, n_splits=n_splits)
         self.X = X
         self.y = y
         self.splits = self.__cache_splits()

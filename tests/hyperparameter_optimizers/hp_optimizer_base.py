@@ -40,9 +40,9 @@ class HpOptimizerBase(unittest.TestCase):
     def _instantiate_trainer(self, trainer, X, y, model_type, metric):
         if is_x_in_signature(trainer):
             return trainer(pipeline=self.pipeline, X=X, y=y, model_wrapper=model_type,
-                           metric=metric)
+                           metric=metric, n_splits=2)
         else:
-            return trainer(pipeline=self.pipeline, model_wrapper=model_type, metric=metric)
+            return trainer(pipeline=self.pipeline, model_wrapper=model_type, metric=metric, n_splits=2)
 
 
 # load data

@@ -47,11 +47,12 @@ def load_model() -> ModelInferenceWrapper:
 
 class Trainer(ABC):
     def __init__(self, pipeline: DTPipeline, model_wrapper: ModelWrapper, metric: AccuracyMetric = AccuracyMetric.MAE,
-                 grouping_columns: list[str] = None):
+                 grouping_columns: list[str] = None, n_splits: int = 5):
         self.pipeline: DTPipeline = pipeline
         self.metric: AccuracyMetric = metric
         self.model_wrapper = model_wrapper
         self.grouping_columns = grouping_columns
+        self.n_splits = n_splits
         self.evals: [] = []
 
     def get_pipeline(self) -> DTPipeline:
@@ -71,14 +72,14 @@ class Trainer(ABC):
         """
         if self.model_wrapper.get_objective() == Objective.REGRESSION:
             if self.grouping_columns is not None:
-                return GroupKFold(n_splits=5)
+                return GroupKFold(n_splits=self.n_splits)
             else:
-                return KFold(n_splits=5, random_state=0, shuffle=True)
+                return KFold(n_splits=self.n_splits, random_state=0, shuffle=True)
         elif self.model_wrapper.get_objective() == Objective.CLASSIFICATION:
             if self.grouping_columns is not None:
-                return StratifiedGroupKFold(n_splits=5, random_state=0, shuffle=True)
+                return StratifiedGroupKFold(n_splits=self.n_splits, random_state=0, shuffle=True)
             else:
-                return StratifiedKFold(n_splits=5, random_state=0, shuffle=True)
+                return StratifiedKFold(n_splits=self.n_splits, random_state=0, shuffle=True)
 
     def show_feature_importance(self, X: DataFrame):
         # Apply the same transformations as the training process

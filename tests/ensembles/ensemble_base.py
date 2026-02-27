@@ -80,12 +80,14 @@ for model_module_1, model_module_2 in combinations:
 
             members_list = [
                 {
-                    'trainer': CachedAccurateCrossTrainer(pipeline, model_instance_1, regression_X, regression_y),
+                    'trainer': CachedAccurateCrossTrainer(pipeline, model_instance_1, regression_X, regression_y,
+                                                         n_splits=2),
                     'params': model_instance_1.get_starter_params(),
                     'optimizer': None
                 },
                 {
-                    'trainer': CachedAccurateCrossTrainer(pipeline, model_instance_2, regression_X, regression_y),
+                    'trainer': CachedAccurateCrossTrainer(pipeline, model_instance_2, regression_X, regression_y,
+                                                         n_splits=2),
                     'params': model_instance_2.get_starter_params(),
                     'optimizer': None
                 }
