@@ -28,7 +28,7 @@ class TrainerBase(unittest.TestCase):
         if self.trainer is not None:
             trainer_instance = self._instantiate_trainer(X, y, model_type, metric)
 
-            accuracy, best_iteration, prediction_comparison = trainer_instance.validate_model(X, y, iterations=10,
+            accuracy, best_iteration, prediction_comparison = trainer_instance.validate_model(X, y, log_level=0,
                                                                                               output_prediction_comparison=True)
 
             # disable plot output
@@ -54,9 +54,9 @@ class TrainerBase(unittest.TestCase):
 
         if data_required:
             return self.trainer(pipeline=self.pipeline, X=X, y=y, model_wrapper=model_type,
-                                metric=metric)
+                                metric=metric, n_splits=2)
         else:
-            return self.trainer(pipeline=self.pipeline, model_wrapper=model_type, metric=metric)
+            return self.trainer(pipeline=self.pipeline, model_wrapper=model_type, metric=metric, n_splits=2)
 
 
 classification_X, classification_y = load_classification_data()
@@ -70,7 +70,7 @@ def add_classification_tests(model_name, model):
     TrainerBase.add_test_method(
         validation_test_name,
         TrainerBase._validate,
-        model_type=model(),
+        model_type=model(early_stopping_rounds=1),
         metric=AccuracyMetric.AUC,
         X=classification_X,
         y=classification_y
@@ -79,7 +79,7 @@ def add_classification_tests(model_name, model):
     TrainerBase.add_test_method(
         training_test_name,
         TrainerBase._train,
-        model_type=model(),
+        model_type=model(early_stopping_rounds=1),
         metric=AccuracyMetric.AUC,
         X=classification_X,
         y=classification_y
@@ -93,7 +93,7 @@ def add_regression_tests(model_name, model):
     TrainerBase.add_test_method(
         validation_test_name,
         TrainerBase._validate,
-        model_type=model(),
+        model_type=model(early_stopping_rounds=1),
         metric=AccuracyMetric.RMSE,
         X=regression_X,
         y=regression_y
@@ -101,7 +101,7 @@ def add_regression_tests(model_name, model):
     TrainerBase.add_test_method(
         training_test_name,
         TrainerBase._train,
-        model_type=model(),
+        model_type=model(early_stopping_rounds=1),
         metric=AccuracyMetric.RMSE,
         X=regression_X,
         y=regression_y
