@@ -17,8 +17,9 @@ version_mismatch = "ERROR: HistGradientBoostingRegressor requires Sklearn >= 1.5
 
 class HGBRegressorWrapper(ModelWrapper):
 
-    def __init__(self, early_stopping_rounds=10):
+    def __init__(self, early_stopping_rounds=10, permutation_importance_repeats=10):
         super().__init__(early_stopping_rounds=early_stopping_rounds)
+        self.permutation_importance_repeats = permutation_importance_repeats
         self.importances = None
 
     def get_objective(self) -> Objective:
@@ -102,7 +103,8 @@ class HGBRegressorWrapper(ModelWrapper):
         # and won't need validation sets for early stopping.
         # Avoid merging in validation_X and validation_y, as it will cause Train data leakage when cross validating.
         self.model.fit(train_X, train_y)
-        self.importances = permutation_importance(self.model, train_X, train_y, n_repeats=10, random_state=0)
+        self.importances = permutation_importance(self.model, train_X, train_y,
+                                                  n_repeats=self.permutation_importance_repeats, random_state=0)
 
     def predict(self, X) -> any:
         if disabled:
