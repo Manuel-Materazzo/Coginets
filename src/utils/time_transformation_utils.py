@@ -49,7 +49,7 @@ def generate_daily_features(df: DataFrame, time_col: str, seconds: bool = False,
     df['hour'] = df[time_col].dt.hour
     df['minute'] = df[time_col].dt.minute
     if seconds:
-        df['seconds'] = df[time_col].dt.seconds
+        df['seconds'] = df[time_col].dt.second
 
     # create sin and cos wave for features, to suggest that time is cyclical
     df['hour_sin'] = np.sin(2 * np.pi * df['hour'] / 24)
