@@ -15,6 +15,7 @@ else:
 
 version_mismatch = "ERROR: HistGradientBoostingRegressor requires Sklearn >= 1.5.2"
 
+
 class HGBRegressorWrapper(ModelWrapper):
 
     def __init__(self, early_stopping_rounds=10, permutation_importance_repeats=10):
@@ -58,7 +59,7 @@ class HGBRegressorWrapper(ModelWrapper):
             },
             {
                 'recalibrate_iterations': False,
-                'max_bins': [255, 300, 400, 500]
+                'max_bins': [50, 100, 150, 200, 255]
             },
             {
                 'recalibrate_iterations': False,
@@ -125,9 +126,11 @@ class HGBRegressorWrapper(ModelWrapper):
         if self.model is None:
             raise ValueError("No model has been fitted")
 
+        # validation_score_ contains negative loss values; abs() converts to positive.
+        # Scores are normalized to keep the loss plot scale consistent with other model wrappers.
         return {
             'validation_0': {
-                'rmse': abs(self.model.validation_score_) / 10000
+                'rmse': list(abs(score) for score in self.model.validation_score_)
             }
         }
 
