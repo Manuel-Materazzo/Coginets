@@ -8,6 +8,7 @@ from src.enums.optimization_direction import OptimizationDirection
 from src.hyperparameter_optimizers.hp_optimizer import HyperparameterOptimizer
 from src.models.model_wrapper import ModelWrapper
 from src.trainers.trainer import Trainer
+from src.utils.logger import log
 
 
 class DefaultGridOptimizer(HyperparameterOptimizer):
@@ -52,7 +53,7 @@ class DefaultGridOptimizer(HyperparameterOptimizer):
             # add 'model__' to every param, to adapt to the model training pipeline terminology
             step_space = {'model__' + key: value for key, value in step_space.items()}
 
-            print("Step {}:".format(index))
+            log.info("Step {}".format(index))
             # grid search for best params
             optimal_params = self.__do_grid_search(self.__get_full_pipeline(optimal_br), X, y, step_space, log_level)
 
@@ -97,15 +98,14 @@ class DefaultGridOptimizer(HyperparameterOptimizer):
         grid_search.fit(X, y)
 
         if log_level > 0:
-            print("Best parameters found: ", grid_search.best_params_)
-            print("Best accuracy: ", -grid_search.best_score_)
+            log.result("Best parameters found", grid_search.best_params_)
+            log.result("Best accuracy", -grid_search.best_score_)
 
         if log_level > 1:
             # Print all parameters and corresponding MAE
             results = grid_search.cv_results_
             for i in range(len(results['params'])):
-                print(f"Parameters: {results['params'][i]}")
-                print(f"Accuracy: {abs(results['mean_test_score'][i])}")
-                print()
+                log.detail(f"Parameters: {results['params'][i]}")
+                log.detail(f"Accuracy: {abs(results['mean_test_score'][i])}")
 
         return grid_search.best_params_

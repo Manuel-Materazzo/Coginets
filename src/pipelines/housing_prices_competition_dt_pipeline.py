@@ -6,6 +6,7 @@ from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
 from sklearn.base import BaseEstimator, TransformerMixin
 
 from src.pipelines.dt_pipeline import DTPipeline
+from src.utils.logger import log
 
 
 class FunctionalImputer(BaseEstimator, TransformerMixin):
@@ -18,7 +19,7 @@ class FunctionalImputer(BaseEstimator, TransformerMixin):
         try:
             X['Functional'] = X['Functional'].fillna('Typ')  # Assume typical unless deductions are warranted
         except KeyError:
-            print('KeyError')
+            log.warning("KeyError: 'Functional' column not found")
 
         return X
 

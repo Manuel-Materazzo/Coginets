@@ -4,6 +4,7 @@ from pandas import DataFrame, Series
 from sklearn.linear_model import Ridge
 
 from src.ensembles.ensemble import EnsembleMember, Ensemble
+from src.utils.logger import log
 
 
 class StackedEnsemble(Ensemble):
@@ -21,8 +22,9 @@ class StackedEnsemble(Ensemble):
         :param y:
         :return:
         """
-        print("Comparisons:")
-        print(oof_predictions)
+        log.section("OOF Comparisons")
+        log.table(oof_predictions)
+        log.end_section()
         self._train_meta_learner(oof_predictions, y)
 
     def show_weights(self):
@@ -32,8 +34,7 @@ class StackedEnsemble(Ensemble):
         """
 
         if self.meta_learner is None:
-            print("Meta learner not trained."
-                  "This probably means the validation was skipped or the callback is set incorrectly.")
+            log.warning("Meta learner not trained. This probably means the validation was skipped or the callback is set incorrectly.")
             return
 
         # X is metafearures dataframe
@@ -43,7 +44,7 @@ class StackedEnsemble(Ensemble):
         importance_df = DataFrame({'feature': feature_names, 'importance': feature_importances}).sort_values(
             by='importance', ascending=False)
 
-        print(importance_df)
+        log.table(importance_df)
         # plot it!
         plt.figure(figsize=(12, 8))
         plt.xlabel('Coefficient')
@@ -63,7 +64,7 @@ class StackedEnsemble(Ensemble):
 
     def predict(self, X: DataFrame) -> Series:
         if len(self.models) == 0:
-            print("No models trained, use train() first")
+            log.error("No models trained, use train() first")
             return Series([])
 
         oof_predictions = DataFrame()

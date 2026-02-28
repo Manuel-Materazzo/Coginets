@@ -15,14 +15,18 @@ from src.hyperparameter_optimizers.hyperopt_bayesian_optimizer import HyperoptBa
 from src.hyperparameter_optimizers.optuna_optimizer import OptunaOptimizer
 from src.trainers.trainer import save_model
 from src.utils.data_utils import load_data
+from src.utils.logger import log
 
+log.header("Single Model Training")
 
-print("Loading data...")
-X, y = load_data('train.csv', 'SalePrice')
+with log.group("Setup"):
+    log.info("Loading data...")
+    X, y = load_data('train.csv', 'SalePrice')
+    log.success("Data loaded")
 
-# save model file for current dataset on target directory
-print("Saving data model...")
-save_data_model(X)
+    log.info("Saving data model...")
+    save_data_model(X)
+    log.success("Data model saved")
 
 # instantiate data pipeline and preprocessor
 preprocessor = EmptyDataPreprocessor()
@@ -36,30 +40,25 @@ model_type = XGBRegressorWrapper(early_stopping_rounds=10)
 trainer = CachedAccurateCrossTrainer(pipeline, model_type, X, y, metric=AccuracyMetric.MAE, grouping_columns=None)
 optimizer = DefaultGridOptimizer(trainer, model_type, direction=OptimizationDirection.MINIMIZE)
 
-# optimize parameters
-print("Tuning Hyperparameters...")
-start = time.time()
-optimized_params = optimizer.tune(X, y, 0.03)
-end = time.time()
+with log.group("Hyperparameter Tuning"):
+    start = time.time()
+    optimized_params = optimizer.tune(X, y, 0.03)
+    elapsed = time.time() - start
+    log.result("Time elapsed", "{:.1f}s".format(elapsed))
 
-print("Tuning took {} seconds".format(end - start))
+with log.group("Model Evaluation"):
+    _, boost_rounds, _ = trainer.validate_model(X, y, log_level=1, params=optimized_params)
 
-print("Training and evaluating model...")
-_, boost_rounds, _ = trainer.validate_model(X, y, log_level=1, params=optimized_params)
-print()
+with log.group("Full Training"):
+    complete_model = trainer.train_model(X, y, iterations=boost_rounds, params=optimized_params)
+    log.success("Model trained")
 
-# fit complete_model on all data from the training data
-print("Fitting complete model...")
-complete_model = trainer.train_model(X, y, iterations=boost_rounds, params=optimized_params)
+with log.group("Saving Artifacts"):
+    preprocessor.save_preprocessor()
+    log.success("Preprocessor saved")
 
-# save preprocessor on target directory
-print("Saving preprocessor...")
-preprocessor.save_preprocessor()
+    pipeline.save_pipeline()
+    log.success("Pipeline saved")
 
-# save trained pipeline on target directory
-print("Saving pipeline...")
-pipeline.save_pipeline()
-
-# save model on target directory
-print("Saving fitted model...")
-save_model(complete_model)
+    save_model(complete_model)
+    log.success("Model saved")

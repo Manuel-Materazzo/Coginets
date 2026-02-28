@@ -14,14 +14,18 @@ from src.hyperparameter_optimizers.optuna_optimizer import OptunaOptimizer
 
 from src.trainers.trainer import save_model
 from src.utils.data_utils import load_data
+from src.utils.logger import log
 
+log.header("Ensemble Training")
 
-print("Loading data...")
-X, y = load_data('train.csv', 'SalePrice')
+with log.group("Setup"):
+    log.info("Loading data...")
+    X, y = load_data('train.csv', 'SalePrice')
+    log.success("Data loaded")
 
-# save model file for current dataset on target directory
-print("Saving data model...")
-save_data_model(X)
+    log.info("Saving data model...")
+    save_data_model(X)
+    log.success("Data model saved")
 
 # instantiate data pipeline
 pipeline = HousingPricesCompetitionDTPipeline(X)
@@ -55,25 +59,22 @@ ensemble = WeightedEnsemble(members=[
     }
 ])
 
-# train models and compute a cross-validation score leaderboard
-# this step auto-optimizes the params when needed
-print("Tuning Hyperparams and Generating model ensemble leaderboard...")
-start = time.time()
-ensemble.validate_models_and_show_leaderboard(X, y)
-end = time.time()
-print("Leaderboard generation took {} seconds".format(end - start))
+with log.group("Model Validation & Hyperparameter Tuning"):
+    start = time.time()
+    ensemble.validate_models_and_show_leaderboard(X, y)
+    elapsed = time.time() - start
+    log.result("Time elapsed", "{:.1f}s".format(elapsed))
 
-# show ensemble weights
-print("Optimizing ensemble weights...")
-ensemble.show_weights()
+with log.group("Ensemble Weights"):
+    ensemble.show_weights()
 
-# fit ensemble on all data from the training data
-ensemble.train(X, y)
+with log.group("Full Ensemble Training"):
+    ensemble.train(X, y)
+    log.success("Ensemble trained")
 
-# save trained pipeline on target directory
-print("Saving pipeline...")
-pipeline.save_pipeline()
+with log.group("Saving Artifacts"):
+    pipeline.save_pipeline()
+    log.success("Pipeline saved")
 
-# save model on target directory
-print("Saving fitted model...")
-save_model(ensemble)
+    save_model(ensemble)
+    log.success("Model saved")

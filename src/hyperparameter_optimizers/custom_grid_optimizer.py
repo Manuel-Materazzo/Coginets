@@ -6,6 +6,7 @@ from src.enums.optimization_direction import OptimizationDirection
 from src.hyperparameter_optimizers.hp_optimizer import HyperparameterOptimizer
 from src.models.model_wrapper import ModelWrapper
 from src.trainers.trainer import Trainer
+from src.utils.logger import log
 
 
 class CustomGridOptimizer(HyperparameterOptimizer):
@@ -38,7 +39,7 @@ class CustomGridOptimizer(HyperparameterOptimizer):
             # avoid to pass useless arguments to the model
             del step_space['recalibrate_iterations']
 
-            print("Step {}:".format(index))
+            log.info("Step {}".format(index))
             # grid search for best params and update the defaults
             self.params.update(
                 self.__do_grid_search(X, y, optimal_br, step_space)
@@ -69,7 +70,7 @@ class CustomGridOptimizer(HyperparameterOptimizer):
         elif self.direction == OptimizationDirection.MAXIMIZE:
             best_score = 0
         else:
-            print("ERROR: optimization direction not valid")
+            log.error("Optimization direction not valid")
             return {}
 
         for params in param_combinations:
@@ -87,12 +88,12 @@ class CustomGridOptimizer(HyperparameterOptimizer):
                 best_params = params
 
         if log_level > 0:
-            print("Best parameters found: ", best_params)
-            print("Best accuracy: {}".format(best_score))
+            log.result("Best parameters found", best_params)
+            log.result("Best accuracy", best_score)
 
         if log_level > 1:
             # Print all results
             for params, accuracy in results:
-                print(f"Parameters: {params}, MAE: {accuracy}")
+                log.detail(f"Parameters: {params}, MAE: {accuracy}")
 
         return best_params

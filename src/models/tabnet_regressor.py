@@ -7,6 +7,7 @@ from pytorch_tabnet.tab_model import TabNetRegressor
 from src.enums.objective import Objective
 from src.models.model_wrapper import ModelWrapper
 from src.models.overrides.tabnet_regressor_override import TabNetRegressorOverride
+from src.utils.logger import log
 
 
 class TabNetRegressorWrapper(ModelWrapper):
@@ -20,7 +21,7 @@ class TabNetRegressorWrapper(ModelWrapper):
 
     def get_base_model(self, iterations, params):
 
-        print("TabNet Won't work with default grid search because of the combined param n_d_n_a")
+        log.warning("TabNet won't work with default grid search because of the combined param n_d_n_a")
 
         # Tabnet is not compatible with pandas datasets, we'll need an override class.
         return TabNetRegressorOverride(params)

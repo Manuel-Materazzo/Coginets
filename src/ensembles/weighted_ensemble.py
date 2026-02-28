@@ -7,6 +7,7 @@ from functools import partial
 from pandas import DataFrame, Series
 
 from src.ensembles.ensemble import EnsembleMember, Ensemble
+from src.utils.logger import log
 
 
 class WeightedEnsemble(Ensemble):
@@ -23,7 +24,7 @@ class WeightedEnsemble(Ensemble):
         :param y:
         :return:
         """
-        print("Optimizing ensemble weights...")
+        log.info("Optimizing ensemble weights...")
         self._optimize_weights(oof_predictions, y)
 
     def show_weights(self):
@@ -33,8 +34,7 @@ class WeightedEnsemble(Ensemble):
         """
 
         if self.weights is None:
-            print("Weights are still not optimized."
-                  "This probably means the validation was skipped or the callback is set incorrectly.")
+            log.warning("Weights are still not optimized. This probably means the validation was skipped or the callback is set incorrectly.")
             return
 
         # Pie chart
@@ -101,12 +101,11 @@ class WeightedEnsemble(Ensemble):
 
     def predict(self, X: DataFrame) -> Series:
         if len(self.weights) == 0:
-            print("Weights are still not optimized."
-                  "This probably means the validation was skipped or the callback is set incorrectly.")
+            log.warning("Weights are still not optimized. This probably means the validation was skipped or the callback is set incorrectly.")
             return Series([])
 
         if len(self.models) == 0:
-            print("No models trained, use train() first")
+            log.error("No models trained, use train() first")
             return Series([])
 
         predictions_array = []

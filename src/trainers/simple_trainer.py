@@ -6,6 +6,7 @@ from src.enums.accuracy_metric import AccuracyMetric
 from src.models.model_wrapper import ModelWrapper
 from src.pipelines.dt_pipeline import DTPipeline
 from src.trainers.trainer import Trainer
+from src.utils.logger import log
 
 
 class SimpleTrainer(Trainer):
@@ -39,7 +40,7 @@ class SimpleTrainer(Trainer):
         # Calculate accuracy
         accuracy = self.calculate_accuracy(predictions, val_y)
         if log_level > 0:
-            print("Validation {}: {}".format(self.metric.value, accuracy))
+            log.result("Validation {}".format(self.metric.value), accuracy)
 
         # create a dataframe with comparison
         if output_prediction_comparison:

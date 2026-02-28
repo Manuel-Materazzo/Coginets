@@ -20,6 +20,8 @@ from src.pipelines.dt_pipeline import DTPipeline
 from abc import ABC, abstractmethod
 from scipy.stats import trim_mean
 
+from src.utils.logger import log
+
 
 def show_confusion_matrix(real_values: Series, predictions):
     cm = confusion_matrix(real_values, predictions)
@@ -93,7 +95,7 @@ class Trainer(ABC):
         total_importance = importance_df['importance'].sum()
         importance_df['importance'] = importance_df['importance'] / total_importance * 100
 
-        print(importance_df)
+        log.table(importance_df)
         # plot it!
         plt.figure(figsize=(12, 8))
         plt.xlabel('Importance %')
@@ -194,17 +196,17 @@ class Trainer(ABC):
         pruned_optimal_boost_rounds = int(trim_mean(best_rounds, proportiontocut=0.1))
 
         if log_level > 0:
-            print("Cross-Validation {}: {}".format(self.metric.value, mean_accuracy))
+            log.result("Cross-Validation {}".format(self.metric.value), mean_accuracy)
             if log_level > 1:
-                print(cv_scores)
-            print("Optimal iterations: ", optimal_boost_rounds)
+                log.detail(str(cv_scores))
+            log.result("Optimal iterations", optimal_boost_rounds)
             if log_level > 1:
-                print("Pruned optimal iterations: ", pruned_optimal_boost_rounds)
-                print(best_rounds)
+                log.detail("Pruned optimal iterations: {}".format(pruned_optimal_boost_rounds))
+                log.detail(str(best_rounds))
 
         # Cross validate model with the optimal boosting round, to check on accuracy discrepancies
         if iterations is None and log_level > 0:
-            print("Generating {} with optimal iterations".format(self.metric.value))
+            log.info("Generating {} with optimal iterations".format(self.metric.value))
             self.validate_model(X, y, iterations=optimal_boost_rounds, log_level=1, params=params)
 
         return mean_accuracy, optimal_boost_rounds, oof_prediction_comparisons
