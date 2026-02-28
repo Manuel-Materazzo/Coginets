@@ -63,3 +63,6 @@ class TabNetRegressorOverride(TabNetRegressor):
                     drop_last=drop_last, callbacks=callbacks, pin_memory=pin_memory,
                     from_unsupervised=from_unsupervised, warm_start=warm_start, augmentations=augmentations,
                     compute_importance=compute_importance)
+
+    def predict(self, X):
+        return super().predict(X.to_numpy())

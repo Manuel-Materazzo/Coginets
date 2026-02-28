@@ -2,6 +2,7 @@ from pytorch_tabnet.tab_model import TabNetClassifier
 
 
 class TabNetClassifierOverride(TabNetClassifier):
+    _estimator_type = "classifier"
 
     def __init__(self, n_d_n_a=None, **kwargs):
         if n_d_n_a is not None:
@@ -63,3 +64,9 @@ class TabNetClassifierOverride(TabNetClassifier):
                     drop_last=drop_last, callbacks=callbacks, pin_memory=pin_memory,
                     from_unsupervised=from_unsupervised, warm_start=warm_start, augmentations=augmentations,
                     compute_importance=compute_importance)
+
+    def predict(self, X):
+        return super().predict(X.to_numpy())
+
+    def predict_proba(self, X):
+        return super().predict_proba(X.to_numpy())
