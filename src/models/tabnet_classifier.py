@@ -7,7 +7,6 @@ from pytorch_tabnet.tab_model import TabNetClassifier
 from src.enums.objective import Objective
 from src.models.model_wrapper import ModelWrapper
 from src.models.overrides.tabnet_classifier_override import TabNetClassifierOverride
-from src.utils.logger import log
 
 
 class TabNetClassifierWrapper(ModelWrapper):
@@ -20,10 +19,11 @@ class TabNetClassifierWrapper(ModelWrapper):
         return Objective.CLASSIFICATION
 
     def get_base_model(self, iterations, params):
-
-        log.warning("TabNet won't work with default grid search because of the combined param n_d_n_a")
-
         # Tabnet is not compatible with pandas datasets, we'll need an override class.
+        params = params.copy()
+        # decouple n_d and n_a for direct construction
+        if 'n_d_n_a' in params:
+            params['n_d'] = params['n_a'] = params.pop('n_d_n_a')
         return TabNetClassifierOverride(**params)
 
     def get_starter_params(self) -> dict:

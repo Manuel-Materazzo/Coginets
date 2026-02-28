@@ -2,6 +2,26 @@ from pytorch_tabnet.tab_model import TabNetRegressor
 
 
 class TabNetRegressorOverride(TabNetRegressor):
+
+    def __init__(self, n_d_n_a=None, **kwargs):
+        if n_d_n_a is not None:
+            kwargs['n_d'] = n_d_n_a
+            kwargs['n_a'] = n_d_n_a
+        self.n_d_n_a = n_d_n_a
+        super().__init__(**kwargs)
+
+    @classmethod
+    def _get_param_names(cls):
+        return sorted(TabNetRegressor._get_param_names() + ['n_d_n_a'])
+
+    def set_params(self, **params):
+        if 'n_d_n_a' in params:
+            n_d_n_a = params.pop('n_d_n_a')
+            self.n_d_n_a = n_d_n_a
+            params['n_d'] = n_d_n_a
+            params['n_a'] = n_d_n_a
+        return super().set_params(**params)
+
     def fit(self, X_train, y_train, eval_set=None, eval_name=None, eval_metric=None, loss_fn=None, weights=0,
             max_epochs=100, patience=10, batch_size=1024, virtual_batch_size=128, num_workers=0, drop_last=True,
             callbacks=None, pin_memory=True, from_unsupervised=None, warm_start=False, augmentations=None,
