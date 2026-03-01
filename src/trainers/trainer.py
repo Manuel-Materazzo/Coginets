@@ -1,5 +1,4 @@
 import math
-import os
 import pickle
 from pathlib import Path
 
@@ -55,7 +54,7 @@ class Trainer(ABC):
         self.model_wrapper = model_wrapper
         self.grouping_columns = grouping_columns
         self.n_splits = n_splits
-        self.evals: [] = []
+        self.evals: list = []
 
     def get_pipeline(self) -> DTPipeline:
         """

@@ -119,9 +119,7 @@ class CachedAccurateCrossTrainer(Trainer):
 
         # compute comparisons across all folds
         if len(oof_comparisons_dataframes) > 0:
-            oof_prediction_comparisons = pd.concat(oof_comparisons_dataframes)
-        else:
-            oof_prediction_comparisons = None
+            pd.concat(oof_comparisons_dataframes)
 
         # extract evals
         self.evals = self.trainer.evals
