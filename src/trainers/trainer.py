@@ -17,7 +17,6 @@ from src.models.model_inference_wrapper import ModelInferenceWrapper
 from src.models.model_wrapper import ModelWrapper
 from src.pipelines.dt_pipeline import DTPipeline
 from abc import ABC, abstractmethod
-from scipy.stats import trim_mean
 
 from src.utils.logger import log
 
