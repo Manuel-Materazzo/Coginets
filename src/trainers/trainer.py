@@ -81,6 +81,8 @@ class Trainer(ABC):
                 return StratifiedGroupKFold(n_splits=self.n_splits, random_state=0, shuffle=True)
             else:
                 return StratifiedKFold(n_splits=self.n_splits, random_state=0, shuffle=True)
+        else:
+            raise ValueError(f"Unsupported objective: {self.model_wrapper.get_objective()}")
 
     def show_feature_importance(self, X: DataFrame):
         # Apply the same transformations as the training process
