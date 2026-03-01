@@ -171,7 +171,7 @@ class Trainer(ABC):
                               X: DataFrame = None, y: Series = None) -> tuple:
         """
         Aggregates cross-validation results: computes mean accuracy, optimal boosting rounds,
-        logs results, and optionally re-validates with optimal iterations.
+        and logs results.
         :param cv_scores: list of accuracy scores from each fold.
         :param best_rounds: list of best iteration counts from each fold.
         :param oof_comparisons_dataframes: list of DataFrames with prediction comparisons per fold.
@@ -192,7 +192,6 @@ class Trainer(ABC):
         mean_accuracy = np.mean(cv_scores)
         # Calculate optimal boosting rounds
         optimal_boost_rounds = int(np.mean(best_rounds))
-        pruned_optimal_boost_rounds = int(trim_mean(best_rounds, proportiontocut=0.1))
 
         if log_level > 0:
             log.result("Cross-Validation {}".format(self.metric.value), mean_accuracy)
@@ -200,13 +199,7 @@ class Trainer(ABC):
                 log.detail(str(cv_scores))
             log.result("Optimal iterations", optimal_boost_rounds)
             if log_level > 1:
-                log.detail("Pruned optimal iterations: {}".format(pruned_optimal_boost_rounds))
                 log.detail(str(best_rounds))
-
-        # Cross validate model with the optimal boosting round, to check on accuracy discrepancies
-        if iterations is None and log_level > 0:
-            log.info("Generating {} with optimal iterations".format(self.metric.value))
-            self.validate_model(X, y, iterations=optimal_boost_rounds, log_level=1, params=params)
 
         return mean_accuracy, optimal_boost_rounds, oof_prediction_comparisons
 
