@@ -19,9 +19,10 @@ class SimpleTrainer(Trainer):
                        output_prediction_comparison=False) -> (float, int, DataFrame):
         """
         Trains a Model on the provided training data by splitting it into training and validation sets.
-        This uses early stopping and will return the optimal number of iterations alongside the accuracy.
+        When no iterations are provided, uses early stopping and returns the optimal number of iterations
+        alongside the accuracy.
         :param output_prediction_comparison: whether to output a dataframe containing predictions and actual values.
-        :param iterations: ignored
+        :param iterations: number of training iterations. If None, uses early stopping.
         :param log_level:
         :param X:
         :param y:
@@ -32,9 +33,11 @@ class SimpleTrainer(Trainer):
         train_X, val_X, train_y, val_y = train_test_split(X, y, random_state=0)
         # Get trained model
         self.evals = []
-        self.train_model(train_X, train_y, val_X, val_y, params=params)
-        # preprocess validation data
-        processed_val_X = pd.DataFrame(self.pipeline.transform(val_X))
+        if iterations is None:
+            _, processed_val_X = self.train_model(train_X, train_y, val_X, val_y, params=params)
+        else:
+            self.train_model(train_X, train_y, iterations=iterations, params=params)
+            processed_val_X = self.pipeline.transform(val_X)
         # Predict validation y using validation X
         predictions = self.get_predictions(processed_val_X)
         # Calculate accuracy
