@@ -21,7 +21,8 @@ class CachedAccurateCrossTrainer(Trainer):
         self.X = X
         self.y = y
         self.splits = self.__cache_splits()
-        self.trainer = AccurateCrossTrainer(pipeline, model_wrapper)
+        self.trainer = AccurateCrossTrainer(pipeline, model_wrapper, metric=metric, grouping_columns=grouping_columns,
+                                            n_splits=n_splits)
 
     def __cache_splits(self) -> list:
         """
@@ -126,4 +127,4 @@ class CachedAccurateCrossTrainer(Trainer):
         self.evals = self.trainer.evals
 
         return self._aggregate_cv_results(cv_scores, best_rounds, oof_comparisons_dataframes,
-                                             log_level, iterations, params, X, y)
+                                          log_level, iterations, params, X, y)
