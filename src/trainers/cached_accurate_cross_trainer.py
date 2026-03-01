@@ -52,13 +52,11 @@ class CachedAccurateCrossTrainer(Trainer):
 
         # if no rounds, train with early stopping
         if iterations is None:
-            self.trainer.train_model(split[0], split[2], split[1], split[3], params=params)
+            _, processed_val_X = self.trainer.train_model(split[0], split[2], split[1], split[3], params=params)
         # else train normally
         else:
             self.trainer.train_model(split[0], split[2], iterations=iterations, params=params)
-
-        # re-process val_X to obtain accuracy
-        processed_val_X = self.trainer.pipeline.transform(split[1])
+            processed_val_X = self.trainer.pipeline.transform(split[1])
 
         # Predict and calculate accuracy
         predictions = self.get_predictions(processed_val_X)
@@ -130,5 +128,4 @@ class CachedAccurateCrossTrainer(Trainer):
         # extract evals
         self.evals = self.trainer.evals
 
-        return self._aggregate_cv_results(cv_scores, best_rounds, oof_comparisons_dataframes,
-                                          log_level, iterations, params, X, y)
+        return self._aggregate_cv_results(cv_scores, best_rounds, oof_comparisons_dataframes, log_level)

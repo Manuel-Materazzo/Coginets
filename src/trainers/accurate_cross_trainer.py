@@ -104,5 +104,4 @@ class AccurateCrossTrainer(Trainer):
             best_rounds.append(best_iteration or 0)
             cv_scores.append(accuracy)
 
-        return self._aggregate_cv_results(cv_scores, best_rounds, oof_comparisons_dataframes,
-                                             log_level, iterations, params, X, y)
+        return self._aggregate_cv_results(cv_scores, best_rounds, oof_comparisons_dataframes, log_level)

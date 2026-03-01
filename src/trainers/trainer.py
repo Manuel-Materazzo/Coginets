@@ -132,6 +132,7 @@ class Trainer(ABC):
         """
         params = params or {}
         processed_train_X = self.pipeline.fit_transform(train_X)
+        processed_val_X = None
 
         # if we have validation sets, train with early stopping rounds
         if val_y is not None:
@@ -142,11 +143,11 @@ class Trainer(ABC):
         else:
             self.model_wrapper.fit(processed_train_X, train_y, iterations, params)
 
-        return self.model_wrapper
+        return self.model_wrapper, processed_val_X
 
     @abstractmethod
     def validate_model(self, X: DataFrame, y: Series, log_level=1, iterations=None, params=None,
-                       output_prediction_comparison=False) -> (float, int, DataFrame):
+                       output_prediction_comparison=False) -> tuple[float, int, DataFrame]:
         """
         Validates the model.
         :param X:
@@ -159,8 +160,7 @@ class Trainer(ABC):
         """
 
     def _aggregate_cv_results(self, cv_scores: list, best_rounds: list, oof_comparisons_dataframes: list,
-                              log_level: int, iterations, params,
-                              X: DataFrame = None, y: Series = None) -> tuple:
+                              log_level: int) -> tuple[float, int, DataFrame]:
         """
         Aggregates cross-validation results: computes mean accuracy, optimal boosting rounds,
         and logs results.
@@ -168,10 +168,6 @@ class Trainer(ABC):
         :param best_rounds: list of best iteration counts from each fold.
         :param oof_comparisons_dataframes: list of DataFrames with prediction comparisons per fold.
         :param log_level: verbosity level (0=silent, 1=summary, 2=detailed).
-        :param iterations: original iterations parameter (None means early stopping was used).
-        :param params: model parameters.
-        :param X: features DataFrame for re-validation.
-        :param y: target Series for re-validation.
         :return: Tuple of (mean_accuracy, optimal_boost_rounds, oof_prediction_comparisons).
         """
         # compute comparisons across all folds
