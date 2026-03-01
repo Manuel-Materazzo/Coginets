@@ -34,13 +34,11 @@ class AccurateCrossTrainer(Trainer):
 
         # if no rounds, train with early stopping
         if iterations is None:
-            self.train_model(train_X, train_y, val_X, val_y, params=params)
+            _, processed_val_X = self.train_model(train_X, train_y, val_X, val_y, params=params)
         # else train normally
         else:
             self.train_model(train_X, train_y, iterations=iterations, params=params)
-
-        # re-process val_X to obtain accuracy
-        processed_val_X = self.pipeline.transform(val_X)
+            processed_val_X = self.pipeline.transform(val_X)
 
         # Predict and calculate accuracy
         predictions = self.get_predictions(processed_val_X)
