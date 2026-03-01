@@ -80,12 +80,14 @@ class CachedAccurateCrossTrainer(Trainer):
     def validate_model(self, X: DataFrame, y: Series, log_level=2, iterations=None, params=None,
                        output_prediction_comparison=False) -> (float, int, DataFrame):
         """
-        Trains 5 Models on the provided training data by cross-validation.
+        Trains 5 Models on the provided training data by cross-validation using cached splits.
         Data is splitted into 5 folds, each model is trained on 4 folds and validated on 1 fold.
         The validation fold is always different, so we are basically training and validating over the entire dataset.
         Accuracy score and optimal iterations of each model are then meaned to get overall values.
         If no rounds are provided, the models are trained using early stopping and will return the optimal number of
         boosting rounds alongside the Accuracy.
+
+        X and y must match the data provided at initialization time, as cached splits are used.
 
         :param output_prediction_comparison: whether to output a dataframe containing predictions and actual values.
         :param X:
@@ -95,6 +97,10 @@ class CachedAccurateCrossTrainer(Trainer):
         :param params:
         :return:
         """
+        if not X.equals(self.X) or not y.equals(self.y):
+            raise ValueError("X and y must match the data provided at initialization time, "
+                             "as this trainer uses cached splits.")
+
         # Placeholder for cross-validation accuracy scores
         cv_scores = []
         best_rounds = []
