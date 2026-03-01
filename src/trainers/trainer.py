@@ -21,15 +21,6 @@ from abc import ABC, abstractmethod
 from src.utils.logger import log
 
 
-def show_confusion_matrix(real_values: Series, predictions):
-    cm = confusion_matrix(real_values, predictions)
-    sns.heatmap(cm, annot=True, fmt='', cmap='Blues')
-    plt.title('Confusion Matrix')
-    plt.xlabel('Predicted')
-    plt.ylabel('Real Data')
-    plt.show()
-
-
 _TARGET_DIR = Path(__file__).resolve().parent.parent.parent / 'target'
 
 
@@ -203,6 +194,15 @@ class Trainer(ABC):
                 log.detail(str(best_rounds))
 
         return mean_accuracy, optimal_boost_rounds, oof_prediction_comparisons
+
+    @staticmethod
+    def show_confusion_matrix(real_values: Series, predictions):
+        cm = confusion_matrix(real_values, predictions)
+        sns.heatmap(cm, annot=True, fmt='', cmap='Blues')
+        plt.title('Confusion Matrix')
+        plt.xlabel('Predicted')
+        plt.ylabel('Real Data')
+        plt.show()
 
     def get_predictions(self, X: DataFrame) -> Series:
         if self.metric == AccuracyMetric.AUC:
