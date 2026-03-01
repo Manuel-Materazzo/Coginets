@@ -37,8 +37,18 @@ def load_model() -> ModelInferenceWrapper:
 
 
 class Trainer(ABC):
+
+    _REGRESSION_METRICS = {AccuracyMetric.MAE, AccuracyMetric.MSE, AccuracyMetric.RMSE}
+    _CLASSIFICATION_METRICS = {AccuracyMetric.AUC, AccuracyMetric.Accuracy, AccuracyMetric.QWK}
+
     def __init__(self, pipeline: DTPipeline, model_wrapper: ModelWrapper, metric: AccuracyMetric = AccuracyMetric.MAE,
                  grouping_columns: list[str] = None, n_splits: int = 5):
+        objective = model_wrapper.get_objective()
+        if objective == Objective.REGRESSION and metric not in self._REGRESSION_METRICS:
+            raise ValueError(f"Metric {metric.value} is not compatible with {objective.value} objective")
+        if objective == Objective.CLASSIFICATION and metric not in self._CLASSIFICATION_METRICS:
+            raise ValueError(f"Metric {metric.value} is not compatible with {objective.value} objective")
+
         self.pipeline: DTPipeline = pipeline
         self.metric: AccuracyMetric = metric
         self.model_wrapper = model_wrapper
