@@ -45,7 +45,7 @@ class TrainerBase(unittest.TestCase):
         if self.trainer is not None:
             trainer_instance = self._instantiate_trainer(X, y, model_type, metric)
 
-            model = trainer_instance.train_model(X, y, iterations=10)
+            model, _ = trainer_instance.train_model(X, y, iterations=10)
             self.assertIsNotNone(model)
 
     def _instantiate_trainer(self, X, y, model_type, metric):

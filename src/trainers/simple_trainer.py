@@ -16,7 +16,7 @@ class SimpleTrainer(Trainer):
         super().__init__(pipeline, model_wrapper, metric=metric, grouping_columns=grouping_columns, n_splits=n_splits)
 
     def validate_model(self, X: DataFrame, y: Series, log_level=1, iterations=None, params=None,
-                       output_prediction_comparison=False) -> (float, int, DataFrame):
+                       output_prediction_comparison=False) -> tuple[float, int, DataFrame]:
         """
         Trains a Model on the provided training data by splitting it into training and validation sets.
         When no iterations are provided, uses early stopping and returns the optimal number of iterations

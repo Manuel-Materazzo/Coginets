@@ -127,7 +127,7 @@ class Trainer(ABC):
         plt.show()
 
     def train_model(self, train_X: DataFrame, train_y: Series, val_X: DataFrame = None, val_y: Series = None,
-                    iterations=1000, params=None) -> ModelWrapper:
+                    iterations=1000, params=None) -> tuple[ModelWrapper, DataFrame | None]:
         """
         Trains a Wrapped Model on the provided training data.
         When validation data is provided, the model is trained with early stopping.
@@ -137,7 +137,7 @@ class Trainer(ABC):
         :param val_X:
         :param val_y:
         :param iterations:
-        :return:
+        :return: Tuple of (trained model wrapper, processed validation data or None).
         """
         params = params or {}
         processed_train_X = self.pipeline.fit_transform(train_X)

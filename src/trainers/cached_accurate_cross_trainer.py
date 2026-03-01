@@ -48,7 +48,7 @@ class CachedAccurateCrossTrainer(Trainer):
         return splits
 
     def __cross_train(self, split, iterations=None, params=None,
-                      output_prediction_comparison=False) -> (int, int, DataFrame):
+                      output_prediction_comparison=False) -> tuple[int, float, DataFrame]:
 
         # if no rounds, train with early stopping
         if iterations is None:
@@ -78,7 +78,7 @@ class CachedAccurateCrossTrainer(Trainer):
             return iterations, accuracy, prediction_comparison
 
     def validate_model(self, X: DataFrame, y: Series, log_level=2, iterations=None, params=None,
-                       output_prediction_comparison=False) -> (float, int, DataFrame):
+                       output_prediction_comparison=False) -> tuple[float, int, DataFrame]:
         """
         Trains 5 Models on the provided training data by cross-validation using cached splits.
         Data is splitted into 5 folds, each model is trained on 4 folds and validated on 1 fold.

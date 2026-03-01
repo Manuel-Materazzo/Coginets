@@ -117,7 +117,7 @@ class Ensemble(ModelInferenceWrapper):
             iterations = \
                 self.leaderboard.loc[self.leaderboard['model_name'] == trainer.get_model_name()].iterations.values[0]
             # train model
-            model = trainer.train_model(X, y, iterations=iterations, params=params)
+            model, _ = trainer.train_model(X, y, iterations=iterations, params=params)
             self.models.append(model)
 
         return self

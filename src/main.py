@@ -50,7 +50,7 @@ with log.group("Model Evaluation"):
     _, boost_rounds, _ = trainer.validate_model(X, y, log_level=1, params=optimized_params)
 
 with log.group("Full Training"):
-    complete_model = trainer.train_model(X, y, iterations=boost_rounds, params=optimized_params)
+    complete_model, _ = trainer.train_model(X, y, iterations=boost_rounds, params=optimized_params)
     log.success("Model trained")
 
 with log.group("Saving Artifacts"):
