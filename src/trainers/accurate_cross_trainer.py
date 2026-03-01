@@ -1,3 +1,5 @@
+import copy
+
 import pandas as pd
 from pandas import DataFrame, Series
 
@@ -90,8 +92,12 @@ class AccurateCrossTrainer(Trainer):
         cv_scores = []
         best_rounds = []
 
+        # Deep-copy pipeline per fold to prevent data leakage across folds
+        original_pipeline = self.pipeline
+
         # Loop through each fold
         for train_index, val_index in kf.split(X, y, groups):
+            self.pipeline = copy.deepcopy(original_pipeline)
             best_iteration, accuracy, oof_prediction_comparison = self.__cross_train(X, y, train_index, val_index,
                                                                                      iterations=iterations,
                                                                                      params=params,
@@ -103,5 +109,9 @@ class AccurateCrossTrainer(Trainer):
             # add the best iteration and accuracy to lists
             best_rounds.append(best_iteration or 0)
             cv_scores.append(accuracy)
+
+        # Restore pipeline and fit on full data for consistent post-CV state
+        self.pipeline = original_pipeline
+        self.pipeline.fit_transform(X)
 
         return self._aggregate_cv_results(cv_scores, best_rounds, oof_comparisons_dataframes, log_level)

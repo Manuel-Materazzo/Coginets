@@ -1,3 +1,5 @@
+import copy
+
 import pandas as pd
 from pandas import DataFrame, Series
 
@@ -106,8 +108,14 @@ class CachedAccurateCrossTrainer(Trainer):
         self.evals = []
         oof_comparisons_dataframes = []
 
+        # Deep-copy pipeline per fold to prevent data leakage across folds
+        original_pipeline = self.pipeline
+
         # Loop through each fold
         for split in self.splits:
+            pipeline_copy = copy.deepcopy(original_pipeline)
+            self.pipeline = pipeline_copy
+            self.trainer.pipeline = pipeline_copy
             # cross train
             best_iteration, accuracy, oof_prediction_comparison = self.__cross_train(split, iterations=iterations,
                                                                                      params=params,
@@ -121,9 +129,10 @@ class CachedAccurateCrossTrainer(Trainer):
             best_rounds.append(best_iteration or 0)
             cv_scores.append(accuracy)
 
-        # compute comparisons across all folds
-        if len(oof_comparisons_dataframes) > 0:
-            pd.concat(oof_comparisons_dataframes)
+        # Restore pipeline and fit on full data for consistent post-CV state
+        self.pipeline = original_pipeline
+        self.trainer.pipeline = original_pipeline
+        self.pipeline.fit_transform(self.X)
 
         # extract evals
         self.evals = self.trainer.evals
