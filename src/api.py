@@ -54,7 +54,7 @@ async def health():
     return {"status": "ok"}
 
 
-@app.post("/predict", response_model=List[int])
+@app.post("/predict", response_model=List[float])
 async def predict_post(datas: List[InputData]):
     try:
         dataframe = pd.DataFrame([data.model_dump() for data in datas])
