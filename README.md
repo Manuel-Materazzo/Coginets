@@ -44,6 +44,9 @@ Note: The live preview will cold-start as you enter the link, it could take up t
 
 ## 🚀 Getting Started
 
+**Access the API**: After installing with the following methods, navigate to `http://localhost:8080/docs` or `http://localhost:8080/redoc` to explore the
+   interactive API documentation and start making predictions!
+
 ### 🐳 Docker prebuilt
 
 1. **Pull the Docker Image**:
@@ -54,8 +57,6 @@ Note: The live preview will cold-start as you enter the link, it could take up t
    ```sh
    docker run -d -p 8080:80 manuel-materazzo/coginets-example
     ```
-3. **Access the API**: Navigate to `http://localhost:8080/docs` or `http://localhost:8080/redoc` to explore the
-   interactive API documentation and start making predictions!
 
 ### 🐳🔧 Docker compose self-build
 
@@ -68,7 +69,7 @@ Note: The live preview will cold-start as you enter the link, it could take up t
 
 1. **Clone Coginets repository**:
    ```sh
-   git clone https://github.com/your-username/Coginets.git
+   git clone https://github.com/Manuel-Materazzo/Coginets.git
    cd Coginets
    ```
 2. **Install the required dependencies**:
