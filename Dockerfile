@@ -1,4 +1,4 @@
-FROM python:3.10.11-slim-bookworm
+FROM python:3.10.19-slim
 
 WORKDIR /app
 
@@ -14,4 +14,7 @@ ENV PYTHONPATH=/app
 WORKDIR /app/src
 RUN python main.py
 
-CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "80"]
+RUN addgroup --system coginets && adduser --system --group coginets
+USER coginets
+
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8080"]
