@@ -1,8 +1,13 @@
 services:
 
-  api:
+  coginets-api:
+    container_name: coginets-api
     build:
       dockerfile: Dockerfile
       context: '.'
+    security_opt:
+      - no-new-privileges
+    cap_drop:
+      - ALL
     ports:
-      - '8080:80'
+      - '8080:8080'
