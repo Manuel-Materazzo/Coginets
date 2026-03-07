@@ -22,10 +22,10 @@ jobs:
         run: pip install -r ./src/requirements.txt
 
       - name: Install test and coverage framework
-        run: pip install pytest pytest-cov
+        run: pip install pytest pytest-cov pytest-timeout
 
       - name: Run tests
-        run: pytest --cov --cov-branch --cov-report=xml
+        run: pytest --cov --cov-branch --cov-report=xml --durations=20 --timeout=60
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
