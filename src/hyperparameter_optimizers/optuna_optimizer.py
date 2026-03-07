@@ -1,4 +1,5 @@
 import optuna
+import os
 import platform
 import optuna_distributed
 from pandas import DataFrame, Series
@@ -35,8 +36,10 @@ class OptunaOptimizer(HyperparameterOptimizer):
         self.y = y
 
         self.study = optuna.create_study(direction=self.direction.value.lower())
-        # leverage distributed training on linux
-        if platform.system() != 'Windows':
+        # leverage distributed training on linux, but not in CI environments
+        # where subprocess forking causes joblib/loky workers to deadlock
+        in_ci = os.environ.get('CI', 'false').lower() == 'true'
+        if platform.system() != 'Windows' and not in_ci:
             self.study = optuna_distributed.from_study(self.study)
         self.study.optimize(self.__objective, n_trials=self.trials)
         self.params.update(self.study.best_params)

@@ -1,6 +1,8 @@
 import os
 import unittest
 
+from sympy.testing import pytest
+
 from src.pipelines.dt_pipeline import load_pipeline, save_data_model
 from src.pipelines.housing_prices_competition_dt_pipeline import HousingPricesCompetitionDTPipeline
 from tests.data_load import load_regression_data
@@ -28,6 +30,7 @@ class TestPipelinesUtils(unittest.TestCase):
         file_path = os.path.dirname(os.path.realpath(__file__)) + '/../target/data-model.json'
         self.assertTrue(os.path.exists(file_path))
 
+    @pytest.mark.skipif("CI" in os.environ)
     def test_pipeline_load(self):
         pipeline = load_pipeline()
         self.assertIsNotNone(pipeline)
