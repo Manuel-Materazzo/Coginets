@@ -25,7 +25,14 @@ jobs:
         run: pip install pytest pytest-cov pytest-timeout
 
       - name: Run tests
-        run: pytest --cov --cov-branch --cov-report=xml --durations=20 --timeout=60
+        run: pytest --cov --cov-branch --cov-report=xml --junitxml=junit.xml -o junit_family=legacy --durations=20 --timeout=60
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: Manuel-Materazzo/Coginets
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
