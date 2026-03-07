@@ -34,7 +34,7 @@ class HyperparameterOptimizer(ABC):
         :return:
         """
         _, optimal_boosting_rounds, _ = self.trainer.validate_model(X, y, log_level=0, params=self.params)
-        return optimal_boosting_rounds
+        return max(1, optimal_boosting_rounds)
 
     def space_to_params(self, space: dict) -> dict:
 

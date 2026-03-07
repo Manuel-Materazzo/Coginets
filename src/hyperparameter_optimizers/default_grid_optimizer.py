@@ -22,7 +22,7 @@ class DefaultGridOptimizer(HyperparameterOptimizer):
         :param optimal_boosting_rounds:
         :return:
         """
-        base_model = self.trainer.model_wrapper.get_base_model(optimal_boosting_rounds, self.params.copy())
+        base_model = self.trainer.model_wrapper.get_base_model(max(1, optimal_boosting_rounds), self.params.copy())
         return self.trainer.get_pipeline().get_pipeline_with_training(base_model)
 
     def tune(self, X: DataFrame, y: Series, final_lr: float, log_level=0) -> dict:
