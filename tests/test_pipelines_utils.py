@@ -29,7 +29,7 @@ class TestPipelinesUtils(unittest.TestCase):
         file_path = os.path.dirname(os.path.realpath(__file__)) + '/../target/data-model.json'
         self.assertTrue(os.path.exists(file_path))
 
-    @pytest.mark.skipif("CI" in os.environ)
+    @pytest.mark.skipif("CI" in os.environ, "Skipped in CI: pipeline.pkl not available")
     def test_pipeline_load(self):
         pipeline = load_pipeline()
         self.assertIsNotNone(pipeline)
