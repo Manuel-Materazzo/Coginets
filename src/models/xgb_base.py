@@ -89,7 +89,10 @@ class XGBBaseWrapper(ModelWrapper):
         return self.model.predict(X)
 
     def get_best_iteration(self) -> int:
-        return self.model.best_iteration
+        try:
+            return self.model.best_iteration
+        except AttributeError:
+            return self.model.n_estimators
 
     def get_loss(self) -> dict[str, dict[str, list[float]]]:
         if self.model is None:
