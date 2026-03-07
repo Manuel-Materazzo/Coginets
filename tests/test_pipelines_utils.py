@@ -1,7 +1,6 @@
 import os
 import unittest
-
-from sympy.testing import pytest
+import pytest
 
 from src.pipelines.dt_pipeline import load_pipeline, save_data_model
 from src.pipelines.housing_prices_competition_dt_pipeline import HousingPricesCompetitionDTPipeline
