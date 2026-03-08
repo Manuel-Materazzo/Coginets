@@ -13,6 +13,9 @@
 <img src="https://img.shields.io/github/license/Manuel-Materazzo/Coginets?style=flat-square&logo=opensourceinitiative&logoColor=white&color=gold" alt="license">
 <img src="https://img.shields.io/github/last-commit/Manuel-Materazzo/Coginets?style=flat-square&logo=git&logoColor=white&color=gold" alt="last-commit">
 <img src="https://img.shields.io/github/languages/top/Manuel-Materazzo/Coginets?style=flat-square&color=gold" alt="repo-top-language">
+<a href="https://codecov.io/gh/Manuel-Materazzo/Coginets" > 
+ <img src="https://codecov.io/gh/Manuel-Materazzo/Coginets/graph/badge.svg?token=61Z0JEJBEU"/> 
+</a>
 </div>
 
 ## ☄️ Features
